@@ -23,7 +23,7 @@ public class TextManipulator {
 	}
 	
 	public static void setChars(String filePath) {
-		BufferedImage[] charas = new BufferedImage[chars];
+		charas = new BufferedImage[chars];
 		BufferedImage spread = ImageGrabber.getImage(filePath);
 		int index = 0;
 		//45x48
@@ -34,10 +34,9 @@ public class TextManipulator {
 				g.drawImage(spread.getSubimage(j * text_dimensions[0], i * text_dimensions[1], text_dimensions[0], text_dimensions[1]), 0, 0, null);
 				//System.out.println(index);
 				charas[index++] = subImage;
-				if(index >= chars) TextManipulator.charas = charas;
+				if(index >= chars) return;
 			}
 		}
-		TextManipulator.charas = charas;
 	}
 	public static void drawTextBox(Graphics g, String text, int scale, int x, int y, int width, int height) {
 		text = text.toLowerCase();
