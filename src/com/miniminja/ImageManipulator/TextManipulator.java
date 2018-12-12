@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 
 public class TextManipulator {
-	public static String textPath = "Alphabet/Alphabet.png";
+	public static String fileLoc = "Alphabet/Alphabet.png";
 	public static int chars = 46;
 	public static int[] text_dimensions = {6, 9};
 	public static char[] quickConversion = {
@@ -15,11 +15,16 @@ public class TextManipulator {
 			'4', '5', '6', '7', '8', '9', '!', ',', '.', '\'', '\"',
 			':', '-', '#', '(', ')'
 	};
-	public static BufferedImage[] charas = getChars();
+	private static BufferedImage[] charas = null;
 	
-	public static BufferedImage[] getChars() {
+	public static BufferedImage[] getCharas() {
+		if(charas == null) System.out.println("You must set characters first!");
+		return charas;
+	}
+	
+	public static void setChars(String filePath) {
 		BufferedImage[] charas = new BufferedImage[chars];
-		BufferedImage spread = ImageGrabber.getImage(textPath);
+		BufferedImage spread = ImageGrabber.getImage(filePath);
 		int index = 0;
 		//45x48
 		for(int i = 0;i<spread.getHeight() / text_dimensions[1];i++) {
@@ -29,10 +34,10 @@ public class TextManipulator {
 				g.drawImage(spread.getSubimage(j * text_dimensions[0], i * text_dimensions[1], text_dimensions[0], text_dimensions[1]), 0, 0, null);
 				//System.out.println(index);
 				charas[index++] = subImage;
-				if(index >= chars) return charas;
+				if(index >= chars) TextManipulator.charas = charas;
 			}
 		}
-		return charas;
+		TextManipulator.charas = charas;
 	}
 	public static void drawTextBox(Graphics g, String text, int scale, int x, int y, int width, int height) {
 		text = text.toLowerCase();
