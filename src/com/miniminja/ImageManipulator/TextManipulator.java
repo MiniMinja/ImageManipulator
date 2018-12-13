@@ -38,6 +38,14 @@ public class TextManipulator {
 			}
 		}
 	}
+	
+	public static BufferedImage getTextBox(String text, int scale, int x, int y, int width, int height) {
+		BufferedImage ret = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = ret.getGraphics();
+		drawTextBox(g, text, scale, x, y, width, height);
+		return ret;
+	}
+	
 	public static void drawTextBox(Graphics g, String text, int scale, int x, int y, int width, int height) {
 		try {
 			text = text.toLowerCase();
