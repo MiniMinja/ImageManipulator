@@ -39,44 +39,48 @@ public class TextManipulator {
 		}
 	}
 	public static void drawTextBox(Graphics g, String text, int scale, int x, int y, int width, int height) {
-		text = text.toLowerCase();
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics textG = image.getGraphics();
-		int row = 0;
-		int maxChars = width / (text_dimensions[0] * scale);
-		Stack<String> sstream = new Stack<String>();
-		Queue<String> temp = new LinkedList<String>();
-		Arrays.stream(text.split(" ")).forEach(str -> sstream.push(str));
-		while(!sstream.isEmpty())  temp.add(sstream.pop());
-		while(!temp.isEmpty()) sstream.push(temp.poll());
-		while(!sstream.isEmpty()){
-			String toAdd = "";
-			String nextToken = sstream.pop();
-			boolean leak = false;
-			while(toAdd.length() + nextToken.length()<= maxChars) {
-				leak = false;
-				toAdd += nextToken + " ";
-				if(! sstream.isEmpty()) {
-					nextToken = sstream.pop();
-					leak = true;
+		try {
+			text = text.toLowerCase();
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			Graphics textG = image.getGraphics();
+			int row = 0;
+			int maxChars = width / (text_dimensions[0] * scale);
+			Stack<String> sstream = new Stack<String>();
+			Queue<String> temp = new LinkedList<String>();
+			Arrays.stream(text.split(" ")).forEach(str -> sstream.push(str));
+			while(!sstream.isEmpty())  temp.add(sstream.pop());
+			while(!temp.isEmpty()) sstream.push(temp.poll());
+			while(!sstream.isEmpty()){
+				String toAdd = "";
+				String nextToken = sstream.pop();
+				boolean leak = false;
+				while(toAdd.length() + nextToken.length()<= maxChars) {
+					leak = false;
+					toAdd += nextToken + " ";
+					if(! sstream.isEmpty()) {
+						nextToken = sstream.pop();
+						leak = true;
+					}
+					else {
+						break;
+					}
 				}
-				else {
-					break;
+				if(leak) sstream.push(nextToken);
+				char[] carr = toAdd.toCharArray();
+				for(int j = 0;j<carr.length;j++) {
+					char c = carr[j];
+					if(c == ' ') continue;
+					textG.drawImage(getText(c), j * text_dimensions[0] * scale, row * text_dimensions[1] * scale, text_dimensions[0] * scale, text_dimensions[1] * scale, null);
 				}
-			}
-			if(leak) sstream.push(nextToken);
-			char[] carr = toAdd.toCharArray();
-			for(int j = 0;j<carr.length;j++) {
-				char c = carr[j];
-				if(c == ' ') continue;
-				textG.drawImage(getText(c), j * text_dimensions[0] * scale, row * text_dimensions[1] * scale, text_dimensions[0] * scale, text_dimensions[1] * scale, null);
-			}
-			row++;
-		}    
-		g.drawImage(image, x, y, null);
+				row++;
+			}    
+			g.drawImage(image, x, y, null);
+		}catch(NullPointerException e) {
+			System.out.println("Don't forget to set your alphabet path!");
+		}
 	}
 	
-	public static BufferedImage getText(char c) {
+	public static BufferedImage getText(char c) throws NullPointerException{
 		int index = 0;
 		while(quickConversion[index] != c) index++;
 		return charas[index];
